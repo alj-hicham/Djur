@@ -13,7 +13,7 @@ public class Db_Connect implements Db_connection {
 
     Connection connect = null;
     PreparedStatement preparedStatement = null;
-    private String user = "root", pw = "", url = "jdbc:mysql://localhost:3306/djur_förvaltning";
+    private String user = "root", pw = "", url = "jdbc:mysql://localhost:3306/djur";
 /*    Användaren användaren = new Användaren();
     private String username = användaren.getLoginiId();
     private String password = användaren.getPassword();*/
@@ -25,8 +25,7 @@ public class Db_Connect implements Db_connection {
             connect = DriverManager.getConnection(url, user, pw);
             if (connect != null) {
 
-  /*  användarenimple anvand = new användarenimple();
-    anvand.VerifyUser(username , password);*/
+
                 System.out.println("successfuly connected");
 
             }

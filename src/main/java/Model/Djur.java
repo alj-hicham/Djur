@@ -13,6 +13,8 @@ public class Djur {
     private int Starlek;
 
     // construstor
+
+
     public Djur(Long id, String namn, int fluffighet, int mysighet, int mosighet, int illaluktande, int smarthet, int starlek) {
         Id = id;
         Namn = namn;

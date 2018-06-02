@@ -16,7 +16,7 @@ public interface Användarenoperation {
 
     List<Användaren> listing(String key);
 
-    boolean delete(String key);
+    boolean delete(Long key);
 
     Användaren getAnvändaren(Long id);
 

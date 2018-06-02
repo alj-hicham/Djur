@@ -5,9 +5,10 @@ public class Användaren {
     private String Namn;
     private String LoginiId;
     private String password;
-    private Boolean Role;
+    private String Role;
 
-    public Användaren(Long id, String namn, String loginiId, String password, Boolean role) {
+
+    public Användaren(Long id, String namn, String loginiId, String password, String role) {
         Id = id;
         Namn = namn;
         LoginiId = loginiId;
@@ -50,11 +51,12 @@ public class Användaren {
         this.password = password;
     }
 
-    public Boolean getRole() {
+    public String getRole() {
         return Role;
     }
 
-    public void setRole(Boolean role) {
+    public void setRole(String role) {
         Role = role;
     }
 }
+

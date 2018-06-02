@@ -1,5 +1,6 @@
 package View;
 
+import DAO.Db_Connect;
 import DAO.användarenimple;
 import Model.Användaren;
 import services.Användarenoperation;
@@ -12,14 +13,19 @@ public class Mainview {
 
 
     public static void main(String[] args) {
+/*        Db_Connect connect = new Db_Connect();
+        connect.openconnection();*/
 
 
-        Användaren användaren = new Användaren();
+        String username = null;
 
+        String password = null;
         användarenimple användar = new användarenimple();
-        String username = användaren.getLoginiId();
-        String password = användaren.getPassword();
+        Användaren användaren = new Användaren();
         användar.VerifyUser(username, password);
+
+/* användar.VerifyUser(username, password);
+användar.Adduser(användaren);*/
 
     }
 
