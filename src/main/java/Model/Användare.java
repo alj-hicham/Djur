@@ -1,24 +1,28 @@
 package Model;
 
-public class Användaren {
+public class Användare {
+    //fields
     private Long Id;
     private String Namn;
     private String LoginiId;
     private String password;
     private String Role;
+    private Long id_djur;
 
-
-    public Användaren(Long id, String namn, String loginiId, String password, String role) {
+    //constructor
+    public Användare(Long id, String namn, String loginiId, String password, String role, Long id_djur) {
         Id = id;
         Namn = namn;
         LoginiId = loginiId;
         this.password = password;
         Role = role;
+        this.id_djur = id_djur;
     }
 
-    public Användaren() {
+    public Användare() {
     }
 
+    // getters and setters
     public Long getId() {
         return Id;
     }
@@ -57,6 +61,14 @@ public class Användaren {
 
     public void setRole(String role) {
         Role = role;
+    }
+
+    public Long getId_djur() {
+        return id_djur;
+    }
+
+    public void setId_djur(Long id_djur) {
+        this.id_djur = id_djur;
     }
 }
 

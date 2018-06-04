@@ -10,15 +10,16 @@ public interface Användarenoperation {
 
     boolean VerifyUser(String Username, String password);
 
-    boolean Adduser(Användaren användaren);
+    boolean Adduser(Användare användaren);
 
-    ArrayList<Användaren> Listing();
+    ArrayList<Användare> Listing();
 
-    List<Användaren> listing(String key);
+    List<Användare> listing(String key);
 
     boolean delete(Long key);
 
-    Användaren getAnvändaren(Long id);
+
+    boolean deletebyconfirm(Long id, String username, String password);
 
 
 }

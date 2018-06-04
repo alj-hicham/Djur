@@ -10,14 +10,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Db_Connect implements Db_connection {
-
-    Connection connect = null;
-    PreparedStatement preparedStatement = null;
+    //fields
+    private Connection connect = null;
+    private PreparedStatement preparedStatement = null;
     private String user = "root", pw = "", url = "jdbc:mysql://localhost:3306/djur";
 /*    Användaren användaren = new Användaren();
     private String username = användaren.getLoginiId();
     private String password = användaren.getPassword();*/
 
+    //this method is responsible for opening connection to the database
     public void openconnection() {
 
         try {
@@ -42,6 +43,7 @@ public class Db_Connect implements Db_connection {
     }
 
 
+    //this method is responsible for preparing request to the database
     PreparedStatement prepareRequest(String req) {
 //        användarenimple login = new användarenimple();
         try {
@@ -54,7 +56,7 @@ public class Db_Connect implements Db_connection {
         return preparedStatement;
     }
 
-
+    //this method is responsible for closing connection with the database
     public void closconnection() {
 
         try {

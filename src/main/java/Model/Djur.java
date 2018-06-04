@@ -2,7 +2,7 @@ package Model;
 
 //detta är model class för Djur
 public class Djur {
-
+    //fields
     private Long Id;
     private String Namn;
     private int fluffighet;
@@ -14,6 +14,16 @@ public class Djur {
 
     // construstor
 
+
+    public Djur(String namn, int fluffighet, int mysighet, int mosighet, int illaluktande, int smarthet, int starlek) {
+        Namn = namn;
+        this.fluffighet = fluffighet;
+        this.mysighet = mysighet;
+        this.mosighet = mosighet;
+        Illaluktande = illaluktande;
+        this.smarthet = smarthet;
+        Starlek = starlek;
+    }
 
     public Djur(Long id, String namn, int fluffighet, int mysighet, int mosighet, int illaluktande, int smarthet, int starlek) {
         Id = id;
