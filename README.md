@@ -2,7 +2,6 @@ Djur
 
 this application is running by a pure java code and sql as database , jdbc and maven for
 dependencies
-
 things done :
 Login or create account
 or exit
@@ -15,7 +14,6 @@ if administrator :
 6 -list all animal
 7 – delete choice
 8 – exit the application
-
 if user :
 1 – starting the question to list animal based on choice
 2 – exit the application
@@ -33,7 +31,6 @@ things not done yet ( to do )
 doesn&#39;t work yet )
 - if the account doesn&#39;t exist in the application , user need to be asked for the right account
 -delete animal by inserting the name
-
 how to ?
 1 install mysql server
 2 import the database djurförvaltning.sql as zip file
@@ -42,8 +39,7 @@ how to ?
 5 start the java code
 ps :
 i use java version 9 ,it can happen som compatibility issues if you use a older version
-if you find some issues after starting the project try this sql script in our database
-SET GLOBAL time_zone = &#39;+2:00&#39;;
+
 to login with admin account :
 usernae :azzus
 password :22hlceek
