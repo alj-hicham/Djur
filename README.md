@@ -1,5 +1,4 @@
 Djur
-
 this application is running by a pure java code and sql as database , jdbc and maven for
 dependencies
 things done :
@@ -8,7 +7,7 @@ or exit
 if administrator :
 1 - starting the question to list animal based on choice
 2 - create account
-3 -list users
+ list users
 4 - delete account
 5 – add an animal
 6 -list all animal
@@ -39,7 +38,6 @@ how to ?
 5 start the java code
 ps :
 i use java version 9 ,it can happen som compatibility issues if you use a older version
-
 to login with admin account :
 usernae :azzus
 password :22hlceek
