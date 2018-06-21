@@ -1,12 +1,8 @@
 package DAO;
 
 import Model.Användare;
-
 import Model.Djur;
-import Model.Val;
-
 import services.Användarenoperation;
-import services.Djuroperation;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,10 +21,10 @@ public class användareimple implements Användarenoperation {
     private Användare användare = new Användare();
     private String usernamesc = användare.getLoginiId();
     private String Passwordsc = användare.getPassword();
-    private String Namnsc = användare.getNamn();
     private Djuroperationimpl djurop = new Djuroperationimpl();
     private Scanner sc = new Scanner(System.in);
     private Djur djur = new Djur();
+
 
 
     /*this method check the user registration
@@ -48,18 +44,15 @@ if the user is normal user not administrator
 then he will redirect to a menu with 2 choice
 start fågor
 avsluta*/
-    public boolean VerifyUser(String username, String Password) {
+    public boolean VerifyUser(String username, String Password) throws SQLException {
 
         String req = "SELECT `ID`, `Namn`, `username`, `password`, `Role` FROM användare WHERE username = ? and password = ?";
 
         boolean Isvalid = false;
         connectdb.openconnection();
-        PreparedStatement ps = null;
-        ps = connectdb.prepareRequest(req);
-        Val val = new Val();
-
 
         try {
+            PreparedStatement ps = connectdb.prepareRequest(req);
             System.out.println("ditt användarnamn");
             this.usernamesc = sc.nextLine();
 
@@ -69,29 +62,36 @@ avsluta*/
             ps.setString(1, usernamesc);
             ps.setString(2, Passwordsc);
 
-            ResultSet resultSet = ps.executeQuery();
 
-            while (resultSet.next()) {
-                Isvalid = true;
-                String Role = resultSet.getString("Role");
+            try {
+                ResultSet resultSet = ps.executeQuery();
 
 
-                if (Role.equals("admin")) {
+                try {
 
-                    try {
-                        System.out.println("starta frågor: klick 1 ");
-                        System.out.println(" skapa konto :klick 2  ");
-                        System.out.println("lista användare : klick 3");
-                        System.out.println("ta bort konto : klick 4");
-                        System.out.println("lägg till ett djur : klick 5");
-                        System.out.println("lista djuren : klick 6");
-                        System.out.println("lista val : klick 7");
-                        System.out.println("ta bort val :8");
-                        System.out.println("avsluta : klick 9");
+                    while (resultSet.next()) {
+                        Isvalid = true;
+                        String Role = resultSet.getString("Role");
 
-                        try {
+
+                        if (Role.equals("admin")) {
+
+
+                            System.out.println("starta frågor: klick 1 ");
+                            System.out.println(" skapa konto :klick 2  ");
+                            System.out.println("lista användare : klick 3");
+                            System.out.println("ta bort konto : klick 4");
+                            System.out.println("lägg till ett djur : klick 5");
+                            System.out.println("lista djuren : klick 6");
+                            System.out.println("lista val : klick 7");
+                            System.out.println("ta bort val :8");
+                            System.out.println("avsluta : klick 9");
+
+
                             int operation;
                             operation = sc.nextInt();
+
+
                             switch (operation) {
                                 case 1:
 
@@ -137,59 +137,38 @@ avsluta*/
                                 default:
                                     djurop.Startquestion();
                             }
-                        } catch (InputMismatchException ex) {
-                            System.out.println("Vänligen ange ett korrekt nummer");
+                        } else if (Role.equals("user")) {
 
-                        }
-                    } catch (Exception e) {
-                        System.err.println(e);
+                            // try {
+                            System.out.println("starta  : klick 1");
+                            System.out.println("ta bort konto : klick 2");
+                            System.out.println("avsluta: klick 2");
 
-                    }
-                } else if (Role.equals("user")) {
-
-                    try {
-                        System.out.println("starta  : klick 1");
-//                        System.out.println("ta bort konto : klick 2");
-                        System.out.println("avsluta: klick 2");
-                        try {
                             int operationuser = sc.nextInt();
                             switch (operationuser) {
                                 case 1:
                                     djurop.Startquestion();
                                     break;
-                              /*  case 2:
-                                    System.out.println("your Id");
-                                    sc.nextLong();
-                                    Long id = sc.nextLong();
-                                    System.out.println("Användarnamn");
-                                    sc.nextLine();
-                                    String Användarnamn = sc.nextLine();
 
-                                    System.out.println("ditt lösenord");
-                                    sc.nextLine();
-                                    String lösenord = sc.nextLine();
-                                   deletebyconfirm(id , Användarnamn,lösenord);
-                                    break;*/
                                 case 2:
                                     System.exit(0);
 
+
                             }
-
-                        } catch (InputMismatchException inp) {
-                            System.out.println("Vänligen ange ett korrekt nummer");
-
                         }
-
-                    } catch (Exception e) {
-                        System.err.println(e);
                     }
-                } else {
-                    System.out.println("vänligen ange ett korrekt nummer");
-
+                } catch (InputMismatchException e) {
+                    System.out.println("Vänligen ange ett korrekt nummer");
+                } finally {
+                    resultSet.close();
                 }
+            } finally {
+                ps.close();
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
+        } finally {
+            connectdb.closconnection();
         }
         return Isvalid;
     }
@@ -197,35 +176,45 @@ avsluta*/
 
     //this method is responsible for signup
 
-    public boolean Adduser(Användare använd) {
+    public boolean Adduser(Användare använd) throws SQLException {
+
         int a = 0;
         String req = "INSERT INTO användare(Namn,username,password) values (?,?,?)";
 
 
         connectdb.openconnection();
-        PreparedStatement ps = null;
-        ps = connectdb.prepareRequest(req);
+        PreparedStatement ps;
         try {
-            System.out.println("your name");
-            this.Namnsc = sc.nextLine();
-            System.out.println("username");
-            this.usernamesc = sc.nextLine();
+            ps = connectdb.prepareRequest(req);
+            try {
+                System.out.println("your name");
+                sc.nextLine();
+                String namnsc = sc.nextLine();
+                System.out.println("username");
+                sc.nextLine();
+                String myusername = sc.nextLine();
+                System.out.println("password");
+                sc.nextLine();
+                String mypassword = sc.nextLine();
 
-            System.out.println("password");
-            this.Passwordsc = sc.nextLine();
-            ps.setString(1, Namnsc);
-            ps.setString(2, usernamesc);
-            ps.setString(3, Passwordsc);
+                ps.setString(1, namnsc);
+                ps.setString(2, usernamesc);
+                ps.setString(3, Passwordsc);
 
 
-            a = ps.executeUpdate();
-            String username = null;
-            String password = null;
+                a = ps.executeUpdate();
 
-            VerifyUser(username, password);
 
-        } catch (SQLException seql) {
-            System.out.println(seql);
+                VerifyUser(myusername, mypassword);
+
+            } catch (SQLException seql) {
+                seql.printStackTrace();
+            } finally {
+                ps.close();
+            }
+
+        } finally {
+            connectdb.closconnection();
         }
         return a != 0;
 
@@ -234,37 +223,42 @@ avsluta*/
 
     //this method is responsible for listing the users
 
-    public ArrayList<Användare> Listing() {
+    public ArrayList<Användare> Listing() throws SQLException {
         String sql = "SELECT * FROM användare";
         connectdb.openconnection();
         ArrayList<Användare> användarens = new ArrayList<Användare>();
-        PreparedStatement ps = null;
-        ps = connectdb.prepareRequest(sql);
+        PreparedStatement ps = connectdb.prepareRequest(sql);
         try {
             ResultSet resultSet = ps.executeQuery();
+            try {
+                while (resultSet.next()) {
 
-            while (resultSet.next()) {
-                Long ID = resultSet.getLong(1);
-                String Namn = resultSet.getString(2);
-                String LoginId = resultSet.getString(3);
-                String password = resultSet.getString(4);
-                String Role = resultSet.getString(5);
-                Long id_djur = resultSet.getLong(6);
-                Användare användaren = new Användare(ID, Namn, LoginId, password, Role, id_djur);
-                användarens.add(användaren);
-                System.out.println("-----------------------");
-                System.out.println(ID);
-                System.out.println(Namn);
-                System.out.println(LoginId);
-                System.out.println(password);
-                System.out.println(Role);
-                System.out.println("-----------------------");
+                    Long ID = resultSet.getLong(1);
+                    String Namn = resultSet.getString(2);
+                    String LoginId = resultSet.getString(3);
+                    String password = resultSet.getString(4);
+                    String Role = resultSet.getString(5);
+                    Long id_djur = resultSet.getLong(6);
+                    Användare användaren = new Användare(ID, Namn, LoginId, password, Role, id_djur);
+                    användarens.add(användaren);
+                    System.out.println("-----------------------");
+                    System.out.println(ID);
+                    System.out.println(Namn);
+                    System.out.println(LoginId);
+                    System.out.println(password);
+                    System.out.println(Role);
+                    System.out.println("-----------------------");
 
+                }
+
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+
+            } finally {
+                ps.close();
             }
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-
+        } finally {
+            connectdb.closconnection();
         }
         return användarens;
     }
@@ -277,16 +271,21 @@ avsluta*/
 
         String sql = "DELETE FROM användare WHERE ID =? AND username = ? AND password = ?";
         connectdb.openconnection();
-        PreparedStatement ps = connectdb.prepareRequest(sql);
-
         try {
-            ps.setLong(1, ID);
-            ps.setString(2, username);
-            ps.setString(3, password);
-            a = ps.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println(e);
+            PreparedStatement ps = connectdb.prepareRequest(sql);
+            try {
 
+                ps.setLong(1, ID);
+                ps.setString(2, username);
+                ps.setString(3, password);
+                a = ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+        } finally {
+            connectdb.closconnection();
         }
 
         return a != 0;
@@ -294,27 +293,31 @@ avsluta*/
 
 
     //this method is responsible for deleting by ID
-    public boolean delete(Long key) {
+    public boolean delete(Long key) throws SQLException {
         int a = 0;
 
         String sql = "DELETE FROM användare WHERE ID=?";
 
 
         connectdb.openconnection();
-        PreparedStatement ps;
-        ps = connectdb.prepareRequest(sql);
-
-
         try {
-            ps.setLong(1, key);
-            a = ps.executeUpdate();
+            PreparedStatement ps = connectdb.prepareRequest(sql);
 
-        } catch (SQLException ex) {
-            System.out.println(ex);
+
+            try {
+                ps.setLong(1, key);
+                a = ps.executeUpdate();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } finally {
+                ps.close();
+            }
+        } finally {
+            connectdb.closconnection();
         }
-        connectdb.closconnection();
-        return a != 0
-                ;
+
+        return a != 0;
     }
 
     //this method is responsible for listing the user by id

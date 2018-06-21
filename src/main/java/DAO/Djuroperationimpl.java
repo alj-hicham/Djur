@@ -5,13 +5,13 @@ import Model.Djur;
 import Model.Val;
 import services.Djuroperation;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.*;
-import java.sql.Date;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 
 
 //this class is responsible for operation with animal in the database
@@ -19,11 +19,11 @@ public class Djuroperationimpl implements Djuroperation {
     //fields
     private Scanner scanner = new Scanner(System.in);
     private Db_Connect connect = new Db_Connect();
-    private Val choice;
-    private Long id;
+    Val val = new Val();
+    //    private Long id;
     private String username1;
     private Djur djura;
-    private String lösenord1;
+//    private String lösenord1;
 
 
     //this method is responsible for question to the user
@@ -67,9 +67,10 @@ public class Djuroperationimpl implements Djuroperation {
                 System.out.println("Vänligen sätt in djurets id");
                 scanner.nextLong();
                 Long id = scanner.nextLong();
-                System.out.println("Vänligen sätt in användare id");
+          /*      System.out.println("Vänligen sätt in användare id");
                 scanner.nextLong();
-                Long id_anv = scanner.nextLong();
+                Long id_anv = scanner.nextLong();*/
+                valjadjuren(id);
                 break;
         }
 
@@ -79,19 +80,19 @@ public class Djuroperationimpl implements Djuroperation {
     //this method is responsible for the choice of the animal for the user
     //doesn't test it yet
 
-    public boolean valjadjuren(Long id, Long Id_anv) {
+    public boolean valjadjuren(Long id) {
+
         int a = 0;
         Användare användare1 = new Användare();
-        String sql = "UPDATE användare SET ID_djur2=? Where ID = ? ";
+        String sql = "INSERT into val (id_val,id_djur) VALUES(?,?) where id_val= " + id + "";
 
         connect.openconnection();
 
 
-        PreparedStatement ps = null;
-        ps = connect.prepareRequest(sql);
+        PreparedStatement ps = connect.prepareRequest(sql);
         try {
-            ps.setLong(1, id);
-            ps.setLong(2, Id_anv);
+            ps.setLong(1, val.getID_anv());
+            ps.setLong(2, val.getId_djur());
 
 
             a = ps.executeUpdate();
@@ -148,7 +149,7 @@ public class Djuroperationimpl implements Djuroperation {
                             scanner.nextLine();
                             Long id_anv = scanner.nextLong();
 
-                            valjadjuren(id_djur, id_anv);
+                            valjadjuren(id_djur);
                             break;
                     }
 
