@@ -2,7 +2,6 @@ package DAO;
 
 import Model.Användare;
 import Model.Djur;
-import Model.Val;
 import services.Djuroperation;
 
 import java.sql.PreparedStatement;
@@ -17,13 +16,9 @@ import java.util.Scanner;
 //this class is responsible for operation with animal in the database
 public class Djuroperationimpl implements Djuroperation {
     //fields
+    private Djur djura = new Djur();
     private Scanner scanner = new Scanner(System.in);
     private Db_Connect connect = new Db_Connect();
-    Val val = new Val();
-    //    private Long id;
-    private String username1;
-    private Djur djura;
-//    private String lösenord1;
 
 
     //this method is responsible for question to the user
@@ -54,7 +49,6 @@ public class Djuroperationimpl implements Djuroperation {
 
         System.out.println("vill du fortsätta till nästa frågor eller välja en djur ");
         System.out.println(" frågor : 1 ");
-
         System.out.println(" välja: 2");
         int choice2;
         choice2 = scanner.nextInt();
@@ -65,12 +59,16 @@ public class Djuroperationimpl implements Djuroperation {
                 break;
             case 2:
                 System.out.println("Vänligen sätt in djurets id");
-                scanner.nextLong();
-                Long id = scanner.nextLong();
-          /*      System.out.println("Vänligen sätt in användare id");
-                scanner.nextLong();
-                Long id_anv = scanner.nextLong();*/
-                valjadjuren(id);
+
+                Long id_u = scanner.nextLong();
+
+                System.out.println("Vänligen sätt in användare id");
+
+                Long id_anv = scanner.nextLong();
+
+                valjadjuren(id_u, id_anv);
+
+
                 break;
         }
 
@@ -80,28 +78,35 @@ public class Djuroperationimpl implements Djuroperation {
     //this method is responsible for the choice of the animal for the user
     //doesn't test it yet
 
-    public boolean valjadjuren(Long id) {
+    private boolean valjadjuren(Long id, Long id_anv) throws SQLException {
 
         int a = 0;
-        Användare användare1 = new Användare();
-        String sql = "INSERT into val (id_val,id_djur) VALUES(?,?) where id_val= " + id + "";
+
+        String sql = "UPDATE djur SET Id_user=? WHERE Id_djur=" + id + "";
+
 
         connect.openconnection();
-
-
-        PreparedStatement ps = connect.prepareRequest(sql);
         try {
-            ps.setLong(1, val.getID_anv());
-            ps.setLong(2, val.getId_djur());
+
+            PreparedStatement ps;
+            ps = connect.prepareRequest(sql);
+
+            try {
+
+                ps.setLong(1, id_anv);
 
 
-            a = ps.executeUpdate();
+                a = ps.executeUpdate();
+
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+
+            } finally {
+                ps.close();
+            }
+        } finally {
             connect.closconnection();
-
-
-        } catch (SQLException ex) {
-            System.err.println(ex);
-
         }
 
 
@@ -149,13 +154,14 @@ public class Djuroperationimpl implements Djuroperation {
                             scanner.nextLine();
                             Long id_anv = scanner.nextLong();
 
-                            valjadjuren(id_djur);
+
+                            valjadjuren(id_djur, id_anv);
                             break;
                     }
 
 
                 } catch (SQLException e) {
-                    System.out.print(e);
+                    e.printStackTrace();
                 }
                 break;
             case 2:
@@ -179,31 +185,40 @@ public class Djuroperationimpl implements Djuroperation {
         String sql = "SELECT * FROM djur WHERE Mordiskhet< 5";
         List<Djur> djurmordisk = new ArrayList<Djur>();
         connect.openconnection();
-        PreparedStatement pstm = connect.prepareRequest(sql);
-        ResultSet resultSet = pstm.executeQuery();
+        try {
+            PreparedStatement pstm = connect.prepareRequest(sql);
+            try {
+                ResultSet resultSet = pstm.executeQuery();
 
-        while (resultSet.next()) {
-            Long djur_id_nomordisk = resultSet.getLong(1);
-            String Namn_nomornodisk = resultSet.getString(2);
-            int Fluffighet_nomordisk = resultSet.getInt(3);
-            int Mysighet_nomordisk = resultSet.getInt(4);
-            int Mordiskhet_nomordisk = resultSet.getInt(5);
-            int illalusket_nomordisk = resultSet.getInt(6);
-            int smarthet_nomordisk = resultSet.getInt(7);
-            int storlek_nomordisk = resultSet.getInt(8);
-            Djur djurs_nomordisk = new Djur(djur_id_nomordisk, Namn_nomornodisk, Fluffighet_nomordisk, Mysighet_nomordisk, Mordiskhet_nomordisk, illalusket_nomordisk, smarthet_nomordisk, storlek_nomordisk);
-            djurmordisk.add(djurs_nomordisk);
-            System.out.println("----------------------------");
-            System.out.println("djur id" + djur_id_nomordisk);
-            System.out.println("djur namn" + Namn_nomornodisk);
-            System.out.println("fluffighet" + Fluffighet_nomordisk);
-            System.out.println("mysighet : " + Mysighet_nomordisk);
-            System.out.println("Mordiskhet " + Mordiskhet_nomordisk);
-            System.out.println("illaluktande" + illalusket_nomordisk);
-            System.out.println("storlek : " + storlek_nomordisk);
-            System.out.println("smarthet : " + smarthet_nomordisk);
-            System.out.println("----------------------------");
-
+                while (resultSet.next()) {
+                    Long djur_id_nomordisk = resultSet.getLong(1);
+                    String Namn_nomornodisk = resultSet.getString(2);
+                    int Fluffighet_nomordisk = resultSet.getInt(3);
+                    int Mysighet_nomordisk = resultSet.getInt(4);
+                    int Mordiskhet_nomordisk = resultSet.getInt(5);
+                    int illalusket_nomordisk = resultSet.getInt(6);
+                    int smarthet_nomordisk = resultSet.getInt(7);
+                    int storlek_nomordisk = resultSet.getInt(8);
+                    Djur djurs_nomordisk = new Djur(djur_id_nomordisk, Namn_nomornodisk, Fluffighet_nomordisk, Mysighet_nomordisk, Mordiskhet_nomordisk, illalusket_nomordisk, smarthet_nomordisk, storlek_nomordisk);
+                    djurmordisk.add(djurs_nomordisk);
+                    System.out.println("----------------------------");
+                    System.out.println("djur id" + djur_id_nomordisk);
+                    System.out.println("djur namn" + Namn_nomornodisk);
+                    System.out.println("fluffighet" + Fluffighet_nomordisk);
+                    System.out.println("mysighet : " + Mysighet_nomordisk);
+                    System.out.println("Mordiskhet " + Mordiskhet_nomordisk);
+                    System.out.println("illaluktande" + illalusket_nomordisk);
+                    System.out.println("storlek : " + storlek_nomordisk);
+                    System.out.println("smarthet : " + smarthet_nomordisk);
+                    System.out.println("----------------------------");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } finally {
+                pstm.close();
+            }
+        } finally {
+            connect.closconnection();
         }
         return djurmordisk;
 
@@ -217,35 +232,45 @@ public class Djuroperationimpl implements Djuroperation {
         String sql = "SELECT * FROM djur WHERE Mordiskhet>5";
         List<Djur> djurmordisk = new ArrayList<Djur>();
         connect.openconnection();
+        try {
+            PreparedStatement ps = connect.prepareRequest(sql);
+            try {
+                ResultSet resultSet = ps.executeQuery();
 
-        PreparedStatement ps;
-        ps = connect.prepareRequest(sql);
-        ResultSet resultSet = ps.executeQuery();
-
-        while (resultSet.next()) {
-            Long djur_id_mordiskhet = resultSet.getLong(1);
-            String Namn_mordiskhet = resultSet.getString(2);
-            int Fluffighet_mordiskhet = resultSet.getInt(3);
-            int Mysighet_mordiskhet = resultSet.getInt(4);
-            int Mordiskhet_mordiskhet = resultSet.getInt(5);
-            int illalusket_mordiskhet = resultSet.getInt(6);
-            int smarthet_mordiskhet = resultSet.getInt(7);
-            int storlek_mordiskhet = resultSet.getInt(8);
-            Djur djurs_mordiskhet = new Djur(djur_id_mordiskhet, Namn_mordiskhet, Fluffighet_mordiskhet, Mysighet_mordiskhet, Mordiskhet_mordiskhet, illalusket_mordiskhet, smarthet_mordiskhet, storlek_mordiskhet);
-            djurmordisk.add(djurs_mordiskhet);
-
-            System.out.println("----------------------------");
-            System.out.println("djur id :" + djur_id_mordiskhet);
-            System.out.println("djur namn :" + Namn_mordiskhet);
-            System.out.println("fluffighet :" + Fluffighet_mordiskhet);
-            System.out.println("mysighet :" + Mysighet_mordiskhet);
-            System.out.println("Mordiskhet: " + Mordiskhet_mordiskhet);
-            System.out.println("illaluktande : " + illalusket_mordiskhet);
-            System.out.println("storlek : " + storlek_mordiskhet);
-            System.out.println("smarthet :" + smarthet_mordiskhet);
-            System.out.println("----------------------------");
+                while (resultSet.next()) {
+                    Long djur_id_mordiskhet = resultSet.getLong(1);
+                    String Namn_mordiskhet = resultSet.getString(2);
+                    int Fluffighet_mordiskhet = resultSet.getInt(3);
+                    int Mysighet_mordiskhet = resultSet.getInt(4);
+                    int Mordiskhet_mordiskhet = resultSet.getInt(5);
+                    int illalusket_mordiskhet = resultSet.getInt(6);
+                    int smarthet_mordiskhet = resultSet.getInt(7);
+                    int storlek_mordiskhet = resultSet.getInt(8);
+                    Djur djurs_mordiskhet = new Djur(djur_id_mordiskhet, Namn_mordiskhet, Fluffighet_mordiskhet, Mysighet_mordiskhet, Mordiskhet_mordiskhet, illalusket_mordiskhet, smarthet_mordiskhet, storlek_mordiskhet);
+                    djurmordisk.add(djurs_mordiskhet);
 
 
+                    System.out.println("----------------------------");
+                    System.out.println("djur id :" + djur_id_mordiskhet);
+                    System.out.println("djur namn :" + Namn_mordiskhet);
+                    System.out.println("fluffighet :" + Fluffighet_mordiskhet);
+                    System.out.println("mysighet :" + Mysighet_mordiskhet);
+                    System.out.println("Mordiskhet: " + Mordiskhet_mordiskhet);
+                    System.out.println("illaluktande : " + illalusket_mordiskhet);
+                    System.out.println("storlek : " + storlek_mordiskhet);
+                    System.out.println("smarthet :" + smarthet_mordiskhet);
+                    System.out.println("----------------------------");
+
+
+                }
+
+            } finally {
+
+                ps.close();
+
+            }
+        } finally {
+            connect.closconnection();
         }
         return djurmordisk;
     }
@@ -258,38 +283,41 @@ public class Djuroperationimpl implements Djuroperation {
         String sql = "SELECT * FROM djur WHERE smarthet > Mysighet";
         List<Djur> djursmarta = new ArrayList<Djur>();
         connect.openconnection();
+        try {
+            PreparedStatement ps = connect.prepareRequest(sql);
+            try {
+                ResultSet resultSet = ps.executeQuery();
 
-        PreparedStatement ps;
-        ps = connect.prepareRequest(sql);
+                while (resultSet.next()) {
 
-        ResultSet resultSet = ps.executeQuery();
+                    Long djur_id_smarta = resultSet.getLong(1);
+                    String Namn_smarta = resultSet.getString(2);
+                    int Fluffighet_smarta = resultSet.getInt(3);
+                    int Mysighet_smarta = resultSet.getInt(4);
+                    int Mordiskhet_smarta = resultSet.getInt(5);
+                    int illalusket_smarta = resultSet.getInt(6);
+                    int smarthet_smarta = resultSet.getInt(7);
+                    int storlek_smarta = resultSet.getInt(8);
+                    Djur djurs_neg = new Djur(djur_id_smarta, Namn_smarta, Fluffighet_smarta, Mysighet_smarta, Mordiskhet_smarta, illalusket_smarta, smarthet_smarta, storlek_smarta);
+                    djursmarta.add(djurs_neg);
+                    System.out.println("----------------------------");
+                    System.out.println("djur id : " + djur_id_smarta);
+                    System.out.println("djur namn : " + Namn_smarta);
+                    System.out.println("Fluffighet :" + Fluffighet_smarta);
+                    System.out.println("mysighet :" + Mysighet_smarta);
+                    System.out.println("mordoshet" + Mordiskhet_smarta);
+                    System.out.println("illaluktande :" + illalusket_smarta);
+                    System.out.println("storlek :" + storlek_smarta);
+                    System.out.println("smarthet :" + smarthet_smarta);
+                    System.out.println("----------------------------");
 
-        while (resultSet.next()) {
-
-            Long djur_id_smarta = resultSet.getLong(1);
-            String Namn_smarta = resultSet.getString(2);
-            int Fluffighet_smarta = resultSet.getInt(3);
-            int Mysighet_smarta = resultSet.getInt(4);
-            int Mordiskhet_smarta = resultSet.getInt(5);
-            int illalusket_smarta = resultSet.getInt(6);
-            int smarthet_smarta = resultSet.getInt(7);
-            int storlek_smarta = resultSet.getInt(8);
-            Djur djurs_neg = new Djur(djur_id_smarta, Namn_smarta, Fluffighet_smarta, Mysighet_smarta, Mordiskhet_smarta, illalusket_smarta, smarthet_smarta, storlek_smarta);
-            djursmarta.add(djurs_neg);
-            System.out.println("----------------------------");
-            System.out.println("djur id : " + djur_id_smarta);
-            System.out.println("djur namn : " + Namn_smarta);
-            System.out.println("Fluffighet :" + Fluffighet_smarta);
-            System.out.println("mysighet :" + Mysighet_smarta);
-            System.out.println("mordoshet" + Mordiskhet_smarta);
-            System.out.println("illaluktande :" + illalusket_smarta);
-            System.out.println("storlek :" + storlek_smarta);
-            System.out.println("smarthet :" + smarthet_smarta);
-            System.out.println("----------------------------");
-
+                }
+            } finally {
+                ps.close();
+            }
+        } finally {
+            connect.closconnection();
         }
-
-
         return djursmarta;
     }
 
@@ -302,33 +330,41 @@ public class Djuroperationimpl implements Djuroperation {
         List<Djur> djurmysighet = new ArrayList<Djur>();
 
         connect.openconnection();
+        try {
+            PreparedStatement ps = connect.prepareRequest(sql);
+            try {
+                ResultSet resultSet = ps.executeQuery();
 
-        PreparedStatement ps = connect.prepareRequest(sql);
-        ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    Long djur_id_mysig = resultSet.getLong(1);
+                    String Namn_mysig = resultSet.getString(2);
+                    int Fluffighet_mysig = resultSet.getInt(3);
+                    int Mysighet_mysig = resultSet.getInt(4);
+                    int Mordiskhet_mysig = resultSet.getInt(5);
+                    int illalusket_mysig = resultSet.getInt(6);
+                    int smarthet_mysig = resultSet.getInt(7);
+                    int storlek_mysig = resultSet.getInt(8);
+                    Djur djurs_mysig = new Djur(djur_id_mysig, Namn_mysig, Fluffighet_mysig, Mysighet_mysig, Mordiskhet_mysig, illalusket_mysig, smarthet_mysig, storlek_mysig);
+                    djurmysighet.add(djurs_mysig);
+                    System.out.println("----------------------------");
+                    System.out.println("djur id : " + djur_id_mysig);
+                    System.out.println("djur namn :" + Namn_mysig);
+                    System.out.println("fluffighet : " + Fluffighet_mysig);
+                    System.out.println("mysighet " + Mysighet_mysig);
+                    System.out.println("mordiskhet " + Mordiskhet_mysig);
+                    System.out.println("illalusktande" + illalusket_mysig);
+                    System.out.println("smarthet" + smarthet_mysig);
+                    System.out.println("storlek : " + storlek_mysig);
+                    System.out.println("----------------------------");
 
-        while (resultSet.next()) {
-            Long djur_id_mysig = resultSet.getLong(1);
-            String Namn_mysig = resultSet.getString(2);
-            int Fluffighet_mysig = resultSet.getInt(3);
-            int Mysighet_mysig = resultSet.getInt(4);
-            int Mordiskhet_mysig = resultSet.getInt(5);
-            int illalusket_mysig = resultSet.getInt(6);
-            int smarthet_mysig = resultSet.getInt(7);
-            int storlek_mysig = resultSet.getInt(8);
-            Djur djurs_mysig = new Djur(djur_id_mysig, Namn_mysig, Fluffighet_mysig, Mysighet_mysig, Mordiskhet_mysig, illalusket_mysig, smarthet_mysig, storlek_mysig);
-            djurmysighet.add(djurs_mysig);
-            System.out.println("----------------------------");
-            System.out.println("djur id : " + djur_id_mysig);
-            System.out.println("djur namn :" + Namn_mysig);
-            System.out.println("fluffighet : " + Fluffighet_mysig);
-            System.out.println("mysighet " + Mysighet_mysig);
-            System.out.println("mordiskhet " + Mordiskhet_mysig);
-            System.out.println("illalusktande" + illalusket_mysig);
-            System.out.println("smarthet" + smarthet_mysig);
-            System.out.println("storlek : " + storlek_mysig);
-            System.out.println("----------------------------");
-
+                }
+            } finally {
+                ps.close();
+            }
+        } finally {
+            connect.closconnection();
         }
+
 
         return djurmysighet;
     }
@@ -341,36 +377,40 @@ public class Djuroperationimpl implements Djuroperation {
         String sql = "SELECT * FROM djur WHERE Fluffighet <5 ";
         List<Djur> djuren = new ArrayList<Djur>();
         connect.openconnection();
+        try {
+            PreparedStatement ps = connect.prepareRequest(sql);
+            try {
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    Long djur_id_neg = resultSet.getLong(1);
+                    String Namn_neg = resultSet.getString(2);
+                    int Fluffighet_neg = resultSet.getInt(3);
+                    int Mysighet_neg = resultSet.getInt(4);
+                    int Mordiskhet_neg = resultSet.getInt(5);
+                    int illalusket_neg = resultSet.getInt(6);
+                    int smarthet_neg = resultSet.getInt(7);
+                    int storlek_neg = resultSet.getInt(8);
+                    Djur djurs_neg = new Djur(djur_id_neg, Namn_neg, Fluffighet_neg, Mysighet_neg, Mordiskhet_neg, illalusket_neg, smarthet_neg, storlek_neg);
+                    djuren.add(djurs_neg);
+                    System.out.println("----------------------------");
+                    System.out.println("djur id :" + djur_id_neg);
+                    System.out.println("djur namn :" + Namn_neg);
+                    System.out.println("fluffighet : " + Fluffighet_neg);
+                    System.out.println("mysighet : " + Mysighet_neg);
+                    System.out.println("mordiskhet : " + Mordiskhet_neg);
+                    System.out.println("illlaluktande : " + illalusket_neg);
+                    System.out.println("smarthet : " + smarthet_neg);
+                    System.out.println("storlek : " + storlek_neg);
+                    System.out.println("----------------------------");
 
-        PreparedStatement ps;
-        ps = connect.prepareRequest(sql);
+                }
 
-        ResultSet resultSet = ps.executeQuery();
-        while (resultSet.next()) {
-            Long djur_id_neg = resultSet.getLong(1);
-            String Namn_neg = resultSet.getString(2);
-            int Fluffighet_neg = resultSet.getInt(3);
-            int Mysighet_neg = resultSet.getInt(4);
-            int Mordiskhet_neg = resultSet.getInt(5);
-            int illalusket_neg = resultSet.getInt(6);
-            int smarthet_neg = resultSet.getInt(7);
-            int storlek_neg = resultSet.getInt(8);
-            Djur djurs_neg = new Djur(djur_id_neg, Namn_neg, Fluffighet_neg, Mysighet_neg, Mordiskhet_neg, illalusket_neg, smarthet_neg, storlek_neg);
-            djuren.add(djurs_neg);
-            System.out.println("----------------------------");
-            System.out.println("djur id :" + djur_id_neg);
-            System.out.println("djur namn :" + Namn_neg);
-            System.out.println("fluffighet : " + Fluffighet_neg);
-            System.out.println("mysighet : " + Mysighet_neg);
-            System.out.println("mordiskhet : " + Mordiskhet_neg);
-            System.out.println("illlaluktande : " + illalusket_neg);
-            System.out.println("smarthet : " + smarthet_neg);
-            System.out.println("storlek : " + storlek_neg);
-            System.out.println("----------------------------");
-
+            } finally {
+                ps.close();
+            }
+        } finally {
+            connect.closconnection();
         }
-
-
         return djuren;
 
     }
@@ -443,8 +483,7 @@ public class Djuroperationimpl implements Djuroperation {
         int a = 0;
         String sql = "INSERT INTO djur(Namn, Fluffighet, Mysighet, Mordiskhet, illaluktande, smarthet, storlek) VALUES (?,?,?,?,?,?,?) ";
         connect.openconnection();
-        PreparedStatement ps = null;
-        ps = connect.prepareRequest(sql);
+        PreparedStatement ps = connect.prepareRequest(sql);
         try {
             System.out.println("djur namn");
             String djurnamn = scanner.nextLine();
@@ -467,10 +506,12 @@ public class Djuroperationimpl implements Djuroperation {
             ps.setInt(5, illaluktande);
             ps.setInt(6, smarthet);
             ps.setInt(7, storlek);
+
             a = ps.executeUpdate();
             listadjuren();
 
         } catch (SQLException e) {
+            e.printStackTrace();
 
         }
         return a != 0;
@@ -561,12 +602,12 @@ public class Djuroperationimpl implements Djuroperation {
                                 valopimplobject8.tabortval(id_val);
                                 break;
                         }
-                    } catch (Exception e) {
+                    } catch (InputMismatchException e) {
+                        System.out.println("Vänligen ange ett korrekt nummer");
 
                     }
                 } else if (operation == 2) {
-
-                } else {
+                    System.exit(0);
 
                 }
             } catch (InputMismatchException e) {

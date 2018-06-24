@@ -266,7 +266,7 @@ avsluta*/
 
     //this method is responsible for delete account
     // this method doesn't tested yet
-    public boolean deletebyconfirm(Long ID, String username, String password) {
+    public boolean deletebyconfirm(Long ID, String username, String password) throws SQLException {
         int a = 0;
 
         String sql = "DELETE FROM användare WHERE ID =? AND username = ? AND password = ?";
@@ -281,6 +281,8 @@ avsluta*/
                 a = ps.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                ps.close();
             }
 
 

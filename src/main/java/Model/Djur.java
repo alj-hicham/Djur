@@ -11,11 +11,12 @@ public class Djur {
     private int Illaluktande;
     private int smarthet;
     private int Starlek;
+    private Long id_user;
 
     // construstor
 
 
-    public Djur(String namn, int fluffighet, int mysighet, int mosighet, int illaluktande, int smarthet, int starlek) {
+    public Djur(String namn, int fluffighet, int mysighet, int mosighet, int illaluktande, int smarthet, int starlek, Long id_user) {
         Namn = namn;
         this.fluffighet = fluffighet;
         this.mysighet = mysighet;
@@ -23,6 +24,7 @@ public class Djur {
         Illaluktande = illaluktande;
         this.smarthet = smarthet;
         Starlek = starlek;
+        this.id_user = id_user;
     }
 
     public Djur(Long id, String namn, int fluffighet, int mysighet, int mosighet, int illaluktande, int smarthet, int starlek) {
@@ -40,6 +42,15 @@ public class Djur {
     }
 
     //getters and setters
+
+    public Long getId_user() {
+        return id_user;
+    }
+
+    public void setId_user(Long id_user) {
+        this.id_user = id_user;
+    }
+
     public Long getId() {
         return Id;
     }

@@ -1,14 +1,8 @@
-
-
-
 import DAO.användareimple;
-
 import Model.Användare;
 
-
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Mainview {
@@ -41,9 +35,17 @@ public class Mainview {
 
             if (choice == 1) {
 
-                användareop.VerifyUser(username, password);
+                try {
+                    användareop.VerifyUser(username, password);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             } else if (choice == 2) {
-                användareop.Adduser(användare);
+                try {
+                    användareop.Adduser(användare);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             } else if (choice == 3) {
                 System.exit(0);
             }

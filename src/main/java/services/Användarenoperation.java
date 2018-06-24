@@ -20,7 +20,7 @@ public interface Användarenoperation {
     boolean delete(Long key) throws SQLException;
 
 
-    boolean deletebyconfirm(Long id, String username, String password);
+    boolean deletebyconfirm(Long id, String username, String password) throws SQLException;
 
 
 }
